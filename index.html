@@ -283,7 +283,7 @@
                       </div>
                       <div class="stat">
                           <dt>Consumption</dt>
-                          <dd>${(tenantUsage).toFixed(2)} kWh</dd>
+                          <dd>${(tenantNameParam.toUpperCase()==='RIGHT'?(tenantUsage-relaxedUnits):tenantUsage).toFixed(2)} kWh</dd>
                       </div>
                       <div class="stat">
                           <dt>Fixed Charges</dt>
