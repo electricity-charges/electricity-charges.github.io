@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBill</title>
+
+     <style>
+    :root {
+      color-scheme: light dark;
+
+      --container-max: 560px;
+      --radius-lg: 16px;
+      --shadow: 0 6px 20px rgba(0,0,0,0.08);
+
+      --bg: #ffffff;
+      --fg: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+
+      --card-bg: rgba(255,255,255,0.66);
+      --glass-border: 1px solid rgba(255, 255, 255, 0.45);
+
+      --btn-bg: #1E40AF;
+      --btn-bg-hover: #1D4ED8;
+      --btn-fg: #ffffff;
+
+      --toggle-bg: #374151;
+      --toggle-bg-active: #111827;
+      --toggle-fg: #ffffff;
+      --toggle-border: #111827;
+
+      --focus-ring: 3px solid rgba(37, 99, 235, 0.4);
+
+      --bg-overlay: 0.25;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0d10;
+        --fg: #e5e7eb;
+        --muted: #9aa3af;
+        --border: #1f2937;
+        --card-bg: rgba(8,10,14,0.60);
+        --glass-border: 1px solid rgba(255, 255, 255, 0.12);
+
+        --btn-bg: #2563EB;
+        --btn-bg-hover: #1D4ED8;
+        --btn-fg: #ffffff;
+
+        --toggle-bg: #111827;
+        --toggle-bg-active: #0B1220;
+        --toggle-fg: #e5e7eb;
+        --toggle-border: #374151;
+
+        --bg-overlay: 0.38;
+        --shadow: 0 10px 24px rgba(0,0,0,0.6);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--fg);
+      font: 600 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      background: url("1.jpg") center/cover no-repeat fixed;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(
+        rgba(255, 255, 255, var(--bg-overlay)),
+        rgba(255, 255, 255, var(--bg-overlay))
+      );
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+    .var{
+      border-radius: 2px;
+      padding: 1.2px;
+      color: var(--bg);
+      background-color: var(--fg);
+    }
+    .mainHeading {
+      display: block;
+      width: 60%;
+      margin: 10px auto 14px;
+      padding: 3px;
+      text-align: center;
+      text-wrap: balance; 
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      font-size: 2.4rem;
+      color: var(--fg, #111827);
+      background: color-mix(in oklab, var(--bg, #ffffff) 72%, transparent);
+      border: 1px solid var(--border, #e5e7eb);
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow, 0 6px 20px rgba(0,0,0,0.08));
+      text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+      transition: filter .2s ease, box-shadow .2s ease, background-color .2s ease;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: var(--container-max);
+      margin: 3rem auto 24px;
+      padding: 16px;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    
+    .form_container {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+    }
+
+    .heading {
+      background: #015a80;
+      color: white;
+      text-align: center;
+      margin: -18px -18px 14px -18px;
+      padding: 14px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .heading h2 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .form_wrap { margin-bottom: 14px; }
+    .form_item label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--fg);
+      font-weight: 650;
+    }
+
+    .form_item input[type="number"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      font-size: 16px;
+      border: 1px solid #c7ccd5;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #111827;
+    }
+    .form_item input[type="number"]:focus { outline: var(--focus-ring); border-color: #2563eb; }
+    @media (prefers-color-scheme: dark) {
+      .form_item input[type="number"] { background: #0f172a; color: var(--fg); border-color: #1f2937; }
+    }
+    
+    .form_item input[type="text"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      font-size: 16px;
+      border: 1px solid #c7ccd5;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #111827;
+    }
+    .form_item input[type="text"]:focus { outline: var(--focus-ring); border-color: #2563eb; }
+    @media (prefers-color-scheme: dark) {
+      .form_item input[type="text"] { background: #0f172a; color: var(--fg); border-color: #1f2937; }
+    }
+
+    .btn input[type="submit"] {
+      display: inline-block;
+      width: 100%;
+      min-height: 48px;
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      border: 1px solid transparent;
+      padding: 12px 14px;
+      font-size: 16px;
+      letter-spacing: 0.3px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: filter .2s ease, transform .06s ease, background-color .2s ease;
+    }
+    .btn input[type="submit"]:hover { background: var(--btn-bg-hover); }
+    .btn input[type="submit"]:active { transform: translateY(1px); }
+    .btn input[type="submit"]:focus-visible { outline: var(--focus-ring); }
+
+    #app { margin-top: 14px; }
+
+    .panel {
+      width: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card { margin-bottom: 14px; }
+    .summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .summary-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .summary-title h3 {
+      margin: 0;
+      font-weight: 900;
+      font-size: 1.35rem;
+    }
+    .summary-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      appearance: none;
+      min-height: 40px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--toggle-fg);
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: background-color .2s ease, transform .06s ease, box-shadow .2s ease;
+    }
+    .action-btn:hover { filter: brightness(1.05); }
+    .action-btn:active { transform: translateY(1px); }
+    .action-btn:focus-visible { outline: var(--focus-ring); }
+
+    /* New: icon-only, borderless hint button with glow on open */
+    .icon-btn.hint {
+      appearance: none;
+      min-width: 40px;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border: none;
+      background: transparent;
+      color: var(--fg);
+      opacity: 0.9;
+      cursor: pointer;
+      transition: color .2s ease, opacity .2s ease, text-shadow .2s ease, transform .06s ease;
+    }
+    .icon-btn.hint:hover { opacity: 1; }
+    .icon-btn.hint:active { transform: translateY(1px); }
+    .icon-btn.hint:focus-visible { outline: var(--focus-ring); border-radius: 10px; }
+    /* Glow state toggled via JS when popover is open */
+    .icon-btn.hint.is-active {
+      color: #f59e0b; /* amber-500 */
+      text-shadow:
+        0 0 6px rgba(245, 158, 11, 0.75),
+        0 0 14px rgba(245, 158, 11, 0.55);
+    }
+    /* Engraved, subtle hint style */
+    .hint-engraved {
+        font-size: 0.84rem;
+        letter-spacing: 0.1px;
+        margin-top: 5px;
+        text-shadow:
+            0.5px 0.5px 0 rgba(255,255,255,0.55),  /* light edge */
+            -0.5px -0.5px 0 rgba(0,0,0,0.10);       /* inner dark edge */
+        opacity: 0.75;
+    }
+    @media (prefers-color-scheme: dark) {
+        .hint-engraved {
+            text-shadow:
+            0.5px 0.5px 0 rgba(0,0,0,0.45),
+            -0.5px -0.5px 0 rgba(255,255,255,0.10);
+    }
+}
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px 12px;
+      margin: 8px 0 0 0;
+    }
+    .stats-grid .stat {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--card-bg);
+    }
+    .stats-grid dt {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .stats-grid dd {
+      margin: 0;
+      font-size: clamp(1rem, 0.95rem + 0.4vw, 1.15rem);
+      font-weight: 800;
+      color: var(--fg);
+    }
+    .stat.accent dd { color: #16a34a; font-weight: 900; }
+    .stats-grid .result-stats-grid{
+      border: 1.5px solid #16a34a;
+    }
+    /* Centered modal-like popover with translucent sheet */
+    [popover].popover-card {
+      position: fixed;
+      inset: auto;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.98);
+      margin: 0;
+      max-width: min(92vw, var(--container-max));
+      width: min(92vw, var(--container-max));
+      background: color-mix(in oklab, var(--bg) 72%, transparent);
+      backdrop-filter: blur(8px);
+      padding: 0;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+      opacity: 0;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    :popover-open.popover-card {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .popover-card::backdrop {
+      background: rgba(3, 6, 12, 0.45);
+      backdrop-filter: blur(2px);
+    }
+
+    .popover-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .popover-header h3 {
+      margin: 0;
+      font-weight: 900;
+      font-size: clamp(1.25rem, 1rem + 1vw, 1.6rem);
+    }
+    .popover-inner { padding: 14px 16px; }
+    .close-btn { min-width: 40px; min-height: 40px; padding: 8px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      [popover].popover-card { transition: none; }
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+
+    @media print {
+      body::before { display: none !important; }
+      form, .btn, .summary-actions { display: none !important; }
+      .wrapper { max-width: 720px; }
+      .form_container { box-shadow: none; background: #fff; }
+    }
+
+    .fallback-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 12, 0.45);
+      backdrop-filter: blur(2px);
+      display: none;
+      z-index: 2147483637;
+    }
+    .fallback-overlay.is-open { display: block; }
+    .fallback-modal {
+      position: fixed;
+      max-width: min(92vw, var(--container-max));
+      width: min(92vw, var(--container-max));
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2147483638;
+      background: color-mix(in oklab, var(--bg) 72%, transparent);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+      display: none;
+    }
+    .fallback-modal.is-open { display: block; }
+    .site-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 12px 16px;
+    margin-top: 16px;
+  }
+  .site-footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(17,24,39,0.8);
+    background: color-mix(in oklab, var(--bg, #fff) 92%, transparent);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 10px;
+    padding: 6px 10px;
+    backdrop-filter: blur(4px);
+  }
+  @media (prefers-color-scheme: dark) {
+    .site-footer p {
+      color: rgba(229,231,235,0.85);
+    }
+  }
+  </style>
+</head>
+
+<body>
+    <h1 class = "mainHeading" id="mainHeading"></h1>
+    <div class="wrapper">
+        <div class="form_container">
+            <form name="form">
+                <div class="heading">
+                    <h2>Electricity Bill Calculator</h2>
+                </div>
+
+                <div class="form_wrap">
+                    <div class="form_item">
+                        <label for="units">Electricity Units</label>
+                        <input type="number" id="units" name="units" inputmode="decimal" min="0.01" step="0.01" required />
+                    </div>
+                </div>
+                <div class="form_wrap">
+                    <div class="form_item">
+                        <label for="totalAmount">Total Bill Amount (₹)</label>
+                        <input type="number" id="totalAmount" name="totalAmount" inputmode="decimal" min="0.01" step="0.01" required />
+                    </div>
+                </div>
+                <div class="form_wrap">
+                    <div class="form_item">
+                        <label for="usage">Tenant Usage (in kWh)</label>
+                        <input type="number" id="usage" name="usage" inputmode="decimal" min="0.01" step="0.01" required />
+                    </div>
+                </div>
+                <div class="form_wrap">
+                    <div class="form_item">
+                        <label for="days">Time Interval (in Days)</label>
+                        <input type="number" id="days" name="days" inputmode="decimal" min="1" step="1" required />
+                    </div>
+                </div>
+                <div class="form_wrap">
+                    <div class="form_item">
+                        <label for="relaxedUnits">Relaxed Units</label>
+                        <input type="number" id="relaxedUnits" name="relaxedUnits" inputmode="decimal" min="0.01" step="0.01" required />
+                    </div>
+                </div>
+                <div class="form_wrap">
+                    <div class="form_item">
+                        <label for="varCharges">Variable Electricity Charges (₹)</label>
+                        <input type="text" id="varCharges" name="varCharges" value="@3.65 @5.25 @7.15 @7.8" required />
+                    </div>
+                </div>
+                <div class="btn">
+                    <input id="btn" type="submit" value="Calculate">
+                </div>
+            </form>
+
+            <div id="app"></div>
+        </div>
+    </div>
+
+    <script>
+        /**
+        * Calculates electricity charges with pro-rata slab adjustments
+        */
+        const url = new URL(window.location.href);
+
+        // Get a specific parameter by its name
+        const tenantNameParam = url.searchParams.get('tenant');
+
+        const unitsParam = url.searchParams.get('units');
+        const totalAmountParam = url.searchParams.get('amount');
+        const tenantUsageParam = url.searchParams.get('usage');
+        const billingDaysParam = url.searchParams.get('days');
+        const relaxedUnitsParam = url.searchParams.get('relax');
+
+        if(tenantNameParam !== null){
+            mainHeading.innerHTML = `Bill calculation for ${tenantNameParam} set!`;
+        }
+        else{
+            mainHeading.innerHTML = `Bill calculation for guest user!`;
+        }
+
+        const unitsDOM = document.getElementById('units');
+        const totalAmountDOM = document.getElementById('totalAmount');
+        const billingDaysDOM = document.getElementById('days');
+        const tenantUsageDOM = document.getElementById('usage');
+        const relaxedUnitsDOM = document.getElementById('relaxedUnits');
+
+        if (unitsParam !== null && unitsDOM) unitsDOM.value = unitsParam;
+        if (totalAmountParam !== null && totalAmountDOM) totalAmountDOM.value = totalAmountParam;
+        if (billingDaysParam !== null && billingDaysDOM) billingDaysDOM.value = billingDaysParam;
+        if (tenantUsageParam !== null && tenantUsageDOM) tenantUsageDOM.value = tenantUsageParam;
+        if (relaxedUnitsParam !== null && relaxedUnitsDOM) relaxedUnitsDOM.value = relaxedUnitsParam;
+
+       function parseNum(v) {
+           return Number(String(v).replace(/[₹,\s]/g, ''));
+       }
+       function calculateElectricityBill(consumption, rates, proRataFactor, forTenant) {
+
+           if (consumption <= 0) throw new Error("Invalid consumption value");
+           if (!rates.length) throw new Error("No rates provided");
+           if(forTenant)proRataFactor = proRataFactor*0.5;
+           let adjustedSlabs = [];
+           let currentEnd = 0;
+       
+           rates.forEach((slab, index) => {
+               const slabRange = slab.end === Infinity ? Infinity : (slab.end - slab.start);
+               const adjustedSize = slabRange * proRataFactor; // Apply pro-rata factor
+               const nextEnd = currentEnd + adjustedSize;
+       
+               adjustedSlabs.push({
+                   description: `Slab ${index + 1} (₹${slab.rate}/kWh)`,
+                   range: [currentEnd, nextEnd],
+                   rate: parseFloat(slab.rate) // Ensure numeric conversion
+               });
+       
+               currentEnd = nextEnd;
+           });
+       
+           let remaining = consumption;
+           let total = 0;
+           const breakdown = [];
+       
+           for (const slab of adjustedSlabs) {
+               if (remaining <= 0) break;
+       
+               const [start, end] = slab.range;
+               const available = end === Infinity ? remaining : Math.max(0, end - start);
+               const used = Math.min(remaining, available);
+               const charge = used * slab.rate;
+       
+               breakdown.push({
+                   description: slab.description,
+                   range: `${start.toFixed(2)}-${end === Infinity ? "∞" : end.toFixed(2)} kWh`,
+                   unitsUsed: used.toFixed(4),
+                   charge: charge.toFixed(2),
+                   rate: slab.rate // Include rate for accurate splitting
+               });
+       
+               total += charge;
+               remaining -= used;
+           }
+       
+           return {
+               total: Math.round(total * 100) / 100,
+               breakdown
+           };
+       }
+       
+       /**
+        * Splits electricity charges fairly between two tenants
+        */
+       function splitElectricityBill(totalUnits, tenantUsage, whichTenant, otherTenantUsage, relaxedUnits, rates, billingDays) {
+        
+        if(whichTenant!==null){
+            if(whichTenant.toUpperCase()==='LEFT'){
+                otherTenantUsage = otherTenantUsage - relaxedUnits;
+            }
+            else if(whichTenant.toUpperCase()==='RIGHT'){
+                tenantUsage = tenantUsage - relaxedUnits;
+            }
+        }
+        
+        let energyCharges = 0;
+        let forTenant = true;   
+        const avergaeDaysPerMonth = 30.417;
+        const proRataFactor = billingDays / avergaeDaysPerMonth; // Apply pro-rata factor
+        const breakdown = [];
+        const breakdownForTenant = [];
+        const breakdownForOtherTenant = [];
+
+        if (totalUnits <= 0) throw new Error("Total usage must be greater than zero.");
+        
+        if(tenantUsage<=0 || otherTenantUsage<=0){
+            forTenant = false;
+            const totalEnergyCharges = calculateElectricityBill(totalUnits, rates, proRataFactor, forTenant);
+            return {
+                energyCharges : totalEnergyCharges.total,
+                breakdown : totalEnergyCharges.breakdown
+            }
+        }
+        
+        if (totalUnits < (tenantUsage + otherTenantUsage)) throw new Error("Invalid value for total units consumed");
+        if (tenantUsage < 0 || otherTenantUsage < 0) throw new Error("Usage values cannot be negative.");
+
+        const totalEnergyChargesForTenant = calculateElectricityBill(tenantUsage, rates, proRataFactor, forTenant);
+        const totalEnergyChargesForOtherTenant = calculateElectricityBill(otherTenantUsage, rates, proRataFactor, forTenant);
+        
+        return {
+            totalEnergyChargesForTenant : totalEnergyChargesForTenant.total,
+            breakdownForTenant : totalEnergyChargesForTenant.breakdown, 
+            totalEnergyChargesForOtherTenant : totalEnergyChargesForOtherTenant.total,
+            breakdownForOtherTenant : totalEnergyChargesForOtherTenant.breakdown
+        };
+        
+       }
+       
+       // Event Listener (with additional validation)
+       document.getElementById('btn').addEventListener("click", function (e) {
+
+           e.preventDefault();
+           
+           const units = parseNum(unitsDOM.value);
+           const totalAmount = parseNum(totalAmountDOM.value);
+           const billingDays = parseNum(billingDaysDOM.value);
+           const tenantUsage = parseNum(tenantUsageDOM.value);
+           const relaxedUnits = parseNum(relaxedUnitsDOM.value);
+
+           if (units <= 0 || billingDays <= 0 || tenantUsage < 0) {
+            console.error("Invalid input: Units, billing days, and tenant usage must be positive numbers.");
+           }
+    
+           const otherTenantUsage = units - tenantUsage;
+           if (otherTenantUsage < 0) {
+                console.error("Invalid input: Tenant 1 usage exceeds total units.");
+            }
+           const varCharges = document.getElementById('varCharges').value;
+           const regex = /[+-]?\d+(\.\d+)?/g;
+           const varChargesList = varCharges.match(regex)?.map(parseFloat) || [];
+       
+           if (varChargesList.length < 4) {
+               console.error("Invalid slab rate input. Ensure four values are provided.");
+               return;
+           }
+       
+           const rates = [
+               { start: 0, end: 100, rate: varChargesList[0] },
+               { start: 100, end: 200, rate: varChargesList[1] },
+               { start: 200, end: 400, rate: varChargesList[2] },
+               { start: 400, end: Infinity, rate: varChargesList[3] }
+           ];
+       
+           try {
+               const result = splitElectricityBill(units, tenantUsage, tenantNameParam, otherTenantUsage, relaxedUnits, rates, billingDays);
+               let energyChargesResult = 0;
+               let totalChargesResult = 0;
+               let extraChargesResult = 0;
+               if(Object.keys(result).length == 4){
+                energyChargesResult = result.totalEnergyChargesForTenant;
+                extraChargesResult = (totalAmount - result.totalEnergyChargesForTenant - result.totalEnergyChargesForOtherTenant)*0.5;
+               }
+               else{
+                energyChargesResult = result.energyCharges;
+                extraChargesResult = totalAmount - result.energyCharges;
+               }
+               
+               document.getElementById('app').innerHTML = `
+                <section class="summary-card panel" aria-labelledby="sum-title">
+                    <div class="summary-header">
+                    <div class="summary-title">
+                        <h3 id="sum-title">Summary</h3>
+                    </div>
+                    </div>
+                    <dl class="stats-grid">
+                    <div class="stat">
+                        <dt>Energy Charges</dt>
+                        <dd>₹${(energyChargesResult).toFixed(2)}</dd>
+                    </div>
+                    <div class="stat">
+                        <dt>Consumption</dt>
+                        <dd>${tenantUsage.toFixed(2)} kWh</dd>
+                    </div>
+                    <div class="stat accent result-stats-grid">
+                        <dt>Payable amount</dt>
+                        <dd>₹${(energyChargesResult + extraChargesResult).toFixed(2)}</dd>
+                    </div>
+                    </dl>
+
+                    <p id="sum-live" class="visually-hidden" aria-live="polite"></p>
+                </section>`
+              
+            //    console.log("🔹 Total Bill:", result.totalBill);
+            //    document.getElementById('app').innerHTML = 
+            //     <div style="
+            //         background: rgba(255, 255, 255, 0.2);
+            //         backdrop-filter: blur(10px);
+            //         padding: 20px; 
+            //         border-radius: 15px; 
+            //         box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); 
+            //         text-align: center; 
+            //         font-family: Arial, sans-serif; 
+            //         color: #333; 
+            //         margin-top: 20px; 
+            //         border: 1px solid rgba(255, 255, 255, 0.3);
+            //         animation: fadeIn 0.8s ease-in-out;
+            //         ">
+            //         <p style="font-size: 1.8rem; font-weight: bold; color: #007bff; margin: 0;">
+            //         💡 Your Total ENERGY CHARGES <span style="color: #ff7b00;">₹${result.totalBill.toFixed(2)}</span>
+            //         </p>
+            //         <p style="font-size: 1rem; margin-top: 10px; color: #444; line-height: 1.6;">
+            //         <span style="display: block; font-size: 1rem; margin-top: 8px;">
+            //             <strong style="color: #28a745;">✅ ENERGY CHARGES Tenant 1 :</strong> ₹${result.tenant1.total.toFixed(2)}
+            //         </span>
+            //         <span style="display: block; font-size: 1rem; margin-top: 8px;">
+            //             <strong style="color: #28a745;">✅ ENERGY CHARGES Tenant 2 :</strong> ₹${result.tenant2.total.toFixed(2)}
+            //         </span>
+            //         <i style="color: #ff0000;">*This only covers energy charges, excluding fixed and additional charges.</i>
+            //         </p>
+            //     </div>
+
+            //     <style>
+            //         @keyframes fadeIn {
+            //         from { opacity: 0; transform: translateY(-10px); }
+            //         to { opacity: 1; transform: translateY(0); }
+            //         }
+            //     </style>
+            //     `;
+           } catch (error) {
+               console.error("Error:", error.message);
+           }
+       });
+    </script>
+</body>
+
+</html>
