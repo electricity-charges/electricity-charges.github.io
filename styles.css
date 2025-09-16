@@ -539,6 +539,11 @@ body::before {
   backdrop-filter: blur(4px);
 }
 
+.site-footer a {
+  color: rgba(229, 231, 235, 0.85);
+  text-decoration: none;
+}
+
 @media (prefers-color-scheme: dark) {
   .site-footer p {
     color: rgba(229, 231, 235, 0.85);
@@ -594,3 +599,4 @@ body::before {
   max-height: min(60vh, 480px);
   overflow: auto;
 }
+
